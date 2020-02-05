@@ -1,0 +1,86 @@
+import requests
+import json
+import scrapy
+import re
+from scrapy.http import FormRequest
+from scrapy_splash import SplashRequest
+from w3lib.http import basic_auth_header
+from scrapy.selector import Selector
+from swisscom_IV_crawler.items import SwisscomIvCrawlerItem
+
+class BHGE(scrapy.Spider):
+    name = "SBA_9900203ARV001"
+    
+    custom_settings = {
+         'JOBDIR' : 'None',
+         'FILES_STORE' : 's3://sp5001/SBA_9900203ARV001/',
+        }
+    
+    def start_requests(self):
+        headers = {
+            'Accept': 'application/json, text/javascript, */*; q=0.01',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Accept-Language': 'de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7',
+            'Connection': 'keep-alive',
+            #'Content-Length': '316',
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Cookie': '_ga=GA1.2.9377599.1549202778; _gid=GA1.2.1210191223.1549202778; cookieAccept=true; _gat=1',
+             #'Host': 'investor.twitterinc.com',
+            'Origin': 'https://ir.sbasite.com',
+            'Referer': 'https://ir.sbasite.com/news-and-events/default.aspx',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36',
+            'X-NewRelic-ID': 'VQYBUlRVChABXFNXBAcCXw==',
+            'X-Requested-With': 'XMLHttpRequest',
+           }
+
+        data = {"serviceDto":{"ViewType":"2","ViewDate":"","RevisionNumber":"1","LanguageId":"1","Signature":"","ItemCount":-1,"StartIndex":0,"TagList":[],"IncludeTags":True},"pressReleaseCategoryWorkflowId":"1cb807d2-208f-4bc3-9133-6a9ad45ac3b0","pressReleaseBodyType":0,"pressReleaseSelection":3,"excludeSelection":1,"year":2018}
+        for year in list(range(1998, 2020)):  # loop iterating over different pages of ajax request
+            data['year'] = year
+            s_url = 'https://ir.sbasite.com/Services/PressReleaseService.svc/GetPressReleaseList'
+            yield scrapy.Request(s_url, method='POST', body=json.dumps(data), headers=headers, callback=self.parse)
+        #for num in range(0,11):  # loop iterating over different pages of ajax request
+        #    data['page'] = str(num)
+        #    s_url = 'https://investor.twitterinc.com/Services/PressReleaseService.svc/GetPressReleaseList'
+        #    yield FormRequest(url=s_url, formdata=data, headers=headers, callback=self.parse )
+    
+    def parse(self, response):
+        body = json.loads(response.text)  # load jason response from post request
+        #body = dat[-1]['data']  # [-1] selects last element # extract data body with html content from the json response file
+        #quotes = Selector(text=body).xpath('//div[@class="views-row"]')  # define html body content as reference for the selector
+        for dat in body['GetPressReleaseListResult']:
+            item = {
+                      'PUBSTRING': dat['PressReleaseDate'],
+                      'HEADLINE': dat['Headline'],
+                      'DOCLINK': dat['LinkToDetailPage'],
+                      }
+            base_url = 'https://ir.sbasite.com'
+            url= base_url + dat['LinkToDetailPage']
+            if ".pdf" not in url.lower(): # make url all lowercase so match is not casinsensitive anymore
+                request = scrapy.Request(url=url, callback=self.parse_details)
+                request.meta['item'] = item
+                yield request
+
+            else:
+                item = SwisscomIvCrawlerItem()
+                item['file_urls'] = [url]
+                item['PUBSTRING'] = dat['PressReleaseDate']
+                item['HEADLINE']= dat['Headline']
+                item['DOCLINK']= url
+                yield item 
+
+    def parse_details(self, response):
+        item = response.meta['item']
+        item['DESCRIPTION'] = re.sub(r'(\bAbout\s*SBA\s*Communications\b)(.|\s)* |(\bAbout.SBA.Communications\b)(.|\s)*','' ," ".join(response.xpath('//div[@class="q4default"]//text()').extract()))
+        item['DOCLINK'] = response.url
+        #yield item
+        if not item['DESCRIPTION']:
+            item['DESCRIPTION'] = re.sub(r'(\bAbout\s*SBA\s*Communications\b)(.|\s)* |(\bAbout.SBA.Communications\b)(.|\s)*','' ," ".join(response.xpath('//div[@class="module_body"]/*[not(self::style or self::script or descendant::style or descendant::script)]//text()').extract()))
+            yield item
+        else:     
+            yield item
+           
+
+
+
+        
+            

@@ -1,0 +1,6 @@
+response.xpath('//div[@class="medium-12 large-offset-1 large-10 columns release-list"]/article[@class="press-release"]//h2//text()').extract()
+//div[@class="medium-12 large-offset-1 large-10 columns release-list"]/article[@class="press-release"]//a/p/text()
+//div[@id="tek-wrap-centerwell"]//div[@class="col-sm-12 pad-bottom10"]/h4/a/@href
+
+
+//div[@class="CoveoResultList"]//div[@class="coveo-list-layout CoveoResult"]//div[@class="newsroom-search-result-item-date"]/text()

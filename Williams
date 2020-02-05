@@ -1,0 +1,50 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Sep  2 23:30:54 2018
+
+@author: Winchr01
+"""
+
+import scrapy
+
+
+class QuotessSpider(scrapy.Spider):
+    name = 'Williams_2192300ARV001'
+    start_urls = ['https://investor.williams.com/newsroom/all/all/Williams']
+
+    def parse(self, response):
+         auxs = response.xpath('//div[@class="ModuleItemRow ModuleItem"]')
+         for aux in auxs:
+             item = {
+                     'Date': aux.xpath('.//span[@class="ModuleDate"]/text()').extract_first(),
+                     'Header': aux.xpath('.//span[@class="ModuleHeadline"]/text()').extract_first(),
+                     'url': aux.xpath('./a/@href').extract_first(),
+                     }
+             url= aux.xpath('./a/@href').extract_first()
+             request = scrapy.Request(url=url, callback=self.parse_details)
+             request.meta['item'] = item
+             yield request
+       
+       
+//ul[@class="m_auto_box"]//div[@class="views-field-item views-field-title"]//span[@class="field-content"]/a/@href
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

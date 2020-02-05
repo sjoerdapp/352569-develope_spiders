@@ -1,0 +1,23 @@
+DEVON
+
+//article[@class="archive-table"]/table//tr/td[@class="date"]/text()
+//article[@class="archive-table"]/table//tr/td/a//text()
+//article[@class="archive-table"]/table//tr/td/a/@href
+
+//div[@class="container line"]/main/p/text()
+
+re.findall(r'\d{4}',  response.xpath('//main/h1/text()').extract_first())[0]
+
+_______________________________________________________________________________________
+
+Linde Plc
+//section/article/p/text()
+//section/article/h3/a/text()
+
+//div[@class="list-container"]//text()
+
+_______________________________________________________________________________________
+ O Reilly auto
+//div[@class="content-zone-container" and not(@data-czid="Content Zone One")]//h2//div[@class="header"]/text()
+//div[@class="content-zone-container" and not(@data-czid="Content Zone One")]//h2//div[@class="subheader"]/text()
+//div[@class="content-zone-container" and not(@data-czid="Content Zone One")]//div/a/@href

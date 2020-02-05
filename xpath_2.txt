@@ -1,0 +1,8 @@
+//div[@class="n-layout-flex"]/a/div/h3/text()
+//div[@class="n-layout-flex"]/a/div/p/text()
+//div[@class="n-layout-flex"]/a/div[@class="n-feature-tile__content"]/p/text()
+
+//div[@class="n-layout-flex"]/a
+
+//table//tr[not(ancestor::thead)]/td/text()
+//table//tr[not(ancestor::thead)]/th/a/text()
