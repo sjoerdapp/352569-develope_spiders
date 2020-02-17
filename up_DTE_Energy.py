@@ -58,7 +58,9 @@ class QuotessSpider(scrapy.Spider):
           
           for dat in auxs[0:10]:
               item = SwisscomIvCrawlerItem()
-              item['PUBSTRING'] = dat['date'] # cuts out the part berfore the date as well as the /n at the end of the string
+              date_regex_I = r'(Mon|Tue|Wed|Thu|Fri)'
+              date_regex_II = r'(\d{2}:\d{2})(.|\s)*'
+              item['PUBSTRING'] =re.sub(date_regex_II, '', re.sub(date_regex_I, '', dat['date']))# cuts out the part berfore the date as well as the /n at the end of the string
               item['HEADLINE']= dat['title']
               item['DOCLINK']= response.url
 

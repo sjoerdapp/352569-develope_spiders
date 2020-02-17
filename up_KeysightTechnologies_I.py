@@ -28,7 +28,7 @@ class QuotesInfiniteScrollSpider(scrapy.Spider):
 
     
     def start_requests(self):  # follow drop down menue for different years
-         years = list(range(2019, 2020)) # fill in years which should be scraped, always last yeat +1 as upper bound will not be element of the list
+         years = list(range(2020, 2021)) # fill in years which should be scraped, always last yeat +1 as upper bound will not be element of the list
          #del years[0]  # delets first element "NULL" from list of years
          for year in years:
              aux_url = 'https://investor.keysight.com/investor-news-and-events/financial-press-releases/{}/default.aspx'

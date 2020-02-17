@@ -42,6 +42,7 @@ class QuotessSpider(scrapy.Spider):
     #    'DUPEFILTER_CLASS': 'scrapy_splash.SplashAwareDupeFilter',
     #}
     start_urls = ['https://www.footlocker-inc.com/content/flinc-aem-site/en/home/investor-relations.html#press-releases',
+                  #'https://www.footlocker-inc.com/content/flinc-aem-site/en/home/investor-relations.html#general'
                   ]
 
     #def parse(self, response):  # follow drop down menue for different years
@@ -53,7 +54,10 @@ class QuotessSpider(scrapy.Spider):
     #         yield scrapy.Request(url=year_url, callback=self.parse_next)
 
     def parse(self, response):
-          auxs = response.xpath('//li[@class="reports-list"]')[0:10]
+          auxs_I = response.xpath('//div[@id="financial"]//li[@class="reports-list"]')[0:11]
+          auxs_II= response.xpath('//div[@id="general"]//li[@class="reports-list"]')[0:11]
+          auxs = auxs_I + auxs_II        
+
           for aux in auxs:
               item = SwisscomIvCrawlerItem()
               item['PUBSTRING'] = aux.xpath('./p[@class="date"]/text()').extract_first() # cuts out the part berfore the date as well as the /n at the end of the string

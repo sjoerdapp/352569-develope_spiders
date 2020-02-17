@@ -47,7 +47,7 @@ class BHGE(scrapy.Spider):
            }
 
         data = {"serviceDto":{"ViewType":"2","ViewDate":"","RevisionNumber":"1","LanguageId":"1","Signature":"","ItemCount":-1,"StartIndex":0,"TagList":[],"IncludeTags":True},"pressReleaseBodyType":3,"pressReleaseSelection":3,"pressReleaseCategoryWorkflowId":"00000000-0000-0000-0000-000000000000","excludeSelection":1,"year":2018}
-        for year in list(range(2019, 2020)):  # loop iterating over different pages of ajax request
+        for year in list(range(2019, 2021)):  # loop iterating over different pages of ajax request
             data['year'] = year
             s_url = 'https://investor.twitterinc.com/Services/PressReleaseService.svc/GetPressReleaseList'
             yield scrapy.Request(s_url, method='POST', body=json.dumps(data), headers=headers, callback=self.parse)

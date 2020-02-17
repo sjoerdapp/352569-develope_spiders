@@ -60,7 +60,7 @@ class QuotessSpider(scrapy.Spider):
            }
 
         #data = 'apiKey=BF185719B0464B3CB809D23926182246&LanguageId=1&bodyType=0&pressReleaseDateFilter=3&categoryId=1cb807d2-208f-4bc3-9133-6a9ad45ac3b0&pageSize=-1&pageNumber=0&tagList=&includeTags=true&year=2018&excludeSelection=1'
-        for year in list(range(2020, 2021)):  # loop iterating over different pages of ajax request
+        for year in list(range(2019, 2021)):  # loop iterating over different pages of ajax request
             data = 'https://investors.seagate.com/feed/PressRelease.svc/GetPressReleaseList?apiKey=BF185719B0464B3CB809D23926182246&LanguageId=1&bodyType=0&pressReleaseDateFilter=3&categoryId=1cb807d2-208f-4bc3-9133-6a9ad45ac3b0&pageSize=-1&pageNumber=0&tagList=&includeTags=true&year={}&excludeSelection=1'
             s_url = [data.format(year)][0]
             #s_url = 'https://investors.seagate.com/news/default.aspx'
@@ -72,8 +72,8 @@ class QuotessSpider(scrapy.Spider):
     def parse(self, response):
           body = json.loads(response.text)
           auxs= body['GetPressReleaseListResult']
-          if len(auxs) > 20:
-            auxs = auxs[0:20]
+          if len(auxs) > 10:
+            auxs = auxs[0:5]
 
           for dat in auxs :
               item = SwisscomIvCrawlerItem()

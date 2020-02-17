@@ -35,7 +35,7 @@ class QuotessSpider(scrapy.Spider):
         }
     
     def parse(self, response):
-        years = list(range(2019, 2020))
+        years = list(range(2019, 2021))
         for year in years:
             xpath = '//div[@class="article-content"]/div[@class="sfContentBlock"]/h2[text()="{}"]/following-sibling::ul[1]/li' 
             auxs = response.xpath(xpath.format(year))

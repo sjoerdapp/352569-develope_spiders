@@ -42,7 +42,7 @@ class QuotessSpider(scrapy.Spider):
     #    },
     #    'DUPEFILTER_CLASS': 'scrapy_splash.SplashAwareDupeFilter',
     #}
-    start_urls = ['https://ir.advanceautoparts.com/feed/PressRelease.svc/GetPressReleaseList?apiKey=BF185719B0464B3CB809D23926182246&LanguageId=1&bodyType=0&pressReleaseDateFilter=3&categoryId=1cb807d2-208f-4bc3-9133-6a9ad45ac3b0&pageSize=-1&pageNumber=0&tagList=&includeTags=true&year=2019&excludeSelection=1']
+    start_urls = ['https://ir.advanceautoparts.com/feed/PressRelease.svc/GetPressReleaseList?apiKey=BF185719B0464B3CB809D23926182246&LanguageId=1&bodyType=0&pressReleaseDateFilter=3&categoryId=1cb807d2-208f-4bc3-9133-6a9ad45ac3b0&pageSize=-1&pageNumber=0&tagList=&includeTags=true&year=2020&excludeSelection=1']
 
     #def start_requests(self):
     #    headers = {
