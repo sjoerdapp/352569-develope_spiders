@@ -107,7 +107,7 @@ class QuotessSpider(scrapy.Spider):
     def parse_details(self, response):
         item = response.meta['item']
         name_regex = r'(Forward(.|\s*)Looking\s*Statements)(.|\s)*|(Safe\s*Harbor\s*Statement\b)(.|\s)*'
-        name_regex_2=r'(\bAbout\s*TripAdvisor\b)(.|\s)*|(\bAbout.TripAdvisor\b)(.|\s)*|(\bABOUT.TRIPADVISOR\b)(.|\s)*|(\bAbout.TripAdvisor\b)(.|\s)*'
+        name_regex_2=r'(\bAbout\s*Tripadvisor\b)(.|\s)*|(\bAbout\s*TripAdvisor\b)(.|\s)*|(\bAbout.TripAdvisor\b)(.|\s)*|(\bABOUT.TRIPADVISOR\b)(.|\s)*|(\bAbout.TripAdvisor\b)(.|\s)*'
         if '.pdf' in response.url.lower() or 'external.file' in response.url.lower():
             item['file_urls'] = [response.url]
             item['DOCLINK'] = response.url
@@ -131,6 +131,7 @@ class QuotessSpider(scrapy.Spider):
                 'Third Quarter': 'Third Quarter',
                 'Fourth Quarter': 'Fourth Quarter',
                 'fourth quarter and full year': 'Fourth Quarter',
+                'fourth quarter and full-year': 'Fourth Quarter',
                 'Fourth Quarter and Full Year' : 'Fourth Quarter',
                 'fourth quarter and year': 'Fourth Quarter',
                 'fourth quarter and year end': 'Fourth Quarter',

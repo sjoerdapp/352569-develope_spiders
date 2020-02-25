@@ -50,7 +50,8 @@ class QuotessSpider(scrapy.Spider):
                     'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
                     'accept-encoding': 'gzip, deflate, br',
                     'accept-language': 'de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7',
-                    'cookie': '_ga=GA1.2.665324667.1558623191; _gid=GA1.2.915133571.1558623191; s_cc=true; s_sq=%5B%5BB%5D%5D',
+                    'cookie': '_ga=GA1.2.1502014306.1579858238; _gid=GA1.2.2143776361.1582376349',
+                    #'_ga=GA1.2.665324667.1558623191; _gid=GA1.2.915133571.1558623191; s_cc=true; s_sq=%5B%5BB%5D%5D',
                     'upgrade-insecure-requests': 1,
                     'user-agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36',
            }
@@ -81,7 +82,7 @@ class QuotessSpider(scrapy.Spider):
               #        'HEADLINE': aux.xpath('.//h3[@class="news-card-title"]/a//text()').extract_first(),
               #        'DOCLINK': aux.xpath('.//h3[@class="news-card-title"]/a/@href').extract_first(),
               #        }
-              base_url = 'https://www.cmsenergy.com'
+              base_url = 'https://corporate.discovery.com'
               aux_url = item['DOCLINK'] 
               
               if '.pdf' in aux_url.lower():

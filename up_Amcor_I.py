@@ -24,10 +24,10 @@ from swisscom_IV_crawler.items import SwisscomIvCrawlerItem
 
 
 class QuotessSpider(scrapy.Spider):
-    name = 'Amcor_I_2029200ARV001'
+    name = 'Amcor_I_9900372ARV001'
     custom_settings = {
          'JOBDIR' : 'None',
-         'FILES_STORE' : 's3://352569/Amcor_I_2029200ARV001/',
+         'FILES_STORE' : 's3://352569/Amcor_I_9900372ARV001/',
         }
     #custom_settings = {
     #    'SPLASH_URL': 'http://localhost:8050',
@@ -42,7 +42,8 @@ class QuotessSpider(scrapy.Spider):
     #    'DUPEFILTER_CLASS': 'scrapy_splash.SplashAwareDupeFilter',
     #}
     start_urls = ['https://cdn.contentful.com/spaces/f7tuyt85vtoa/environments/master/entries?access_token=8daaec5877c555c8711652031de344e597e4dd947a32cce59d664600b5f601af&include=5&content_type=newsPage&limit=400',
-                  'https://cdn.contentful.com/spaces/f7tuyt85vtoa/environments/master/entries?access_token=8daaec5877c555c8711652031de344e597e4dd947a32cce59d664600b5f601af&include=5&content_type=oldNews&limit=400,'
+                  'https://cdn.contentful.com/spaces/f7tuyt85vtoa/environments/master/entries?access_token=8daaec5877c555c8711652031de344e597e4dd947a32cce59d664600b5f601af&include=5&content_type=oldNews&limit=400',
+                  'https://cdn.contentful.com/spaces/f7tuyt85vtoa/environments/master/entries?access_token=8daaec5877c555c8711652031de344e597e4dd947a32cce59d664600b5f601af&include=3&content_type=blogPage&order=-fields.date&limit=400',
                   ]
 
     #def parse(self, response):  # follow drop down menue for different years
@@ -58,9 +59,12 @@ class QuotessSpider(scrapy.Spider):
           for aux in body['items']:
               item = SwisscomIvCrawlerItem()
               item['PUBSTRING'] = aux['fields']['date'] # cuts out the part berfore the date as well as the /n at the end of the string
-              if re.search(r'2020-01|2019-12|2019-11|2019-10|2019-09|2019-08|2019-07|2019-06', item['PUBSTRING']):
+              if re.search(r'2020-01|2020-02|2020-03|2020-04', item['PUBSTRING']):
                 item['HEADLINE']= aux['fields']['title']
                 item['DOCLINK']= aux['fields']['slug']
+                if 'T' in item['PUBSTRING']:
+                  item['PUBSTRING'] = aux['fields']['date'].split('T')[0]
+
                 #item = {
                 #        'PUBSTRING': aux.xpath('./p[@class="news-card-date"]//text()').extract()[1],
                 #        'HEADLINE': aux.xpath('.//h3[@class="news-card-title"]/a//text()').extract_first(),

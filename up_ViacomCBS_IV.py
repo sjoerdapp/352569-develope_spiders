@@ -54,7 +54,7 @@ class QuotessSpider(scrapy.Spider):
           body = json.loads(response.body.decode('utf-8'))
           
           #auxs = response.xpath('//ul[@class="content-wrapper"]/li[contains(@class, "item")]')
-          for aux in body['data']['blocks'][1]['data']['blocks'][0]['data']['articles'][0:10]:
+          for aux in body['data']['blocks'][1]['data']['blocks'][0]['data']['articles'][0:15]:
               item = SwisscomIvCrawlerItem()
               item['PUBSTRING'] = aux['datetime'] # cuts out the part berfore the date as well as the /n at the end of the string
               item['HEADLINE']= aux['title']

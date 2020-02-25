@@ -56,7 +56,7 @@ class QuotessSpider(scrapy.Spider):
     def parse(self, response):
           body = json.loads(response.body.decode('utf-8'))
           for aux in body['listItems']:
-              year_I = '2019'
+              year_I = '2021'
               year_II = '2020'
               if year_I in aux['date'].split('T')[0] or year_II in aux['date'].split('T')[0]:
                 item = SwisscomIvCrawlerItem()

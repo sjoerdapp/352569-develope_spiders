@@ -104,7 +104,7 @@ class QuotessSpider(scrapy.Spider):
             item['DESCRIPTION'] = re.sub(name_regex,'' ," ".join(response.xpath('//div[@class="col-lg-9 col-md-9 col-sm-12 col-xs-12"]//text()[not(ancestor::h2)][not(ancestor::div[@class="box__right"] or self::style or self::script or  ancestor::style or ancestor::script or ancestor::p[@id="news-body-cta"] or ancestor::div[@id="bwbodyimg"])]').extract()), flags=re.IGNORECASE)
             item['DOCLINK'] = response.url
             if not re.search('[a-zA-Z]', item['DESCRIPTION']):
-                item['DESCRIPTION'] = 'FEHLER'
+                item['DESCRIPTION'] = re.sub(name_regex,'' ," ".join(response.xpath('//div[contains(@class, "module_body")]//text()[not(ancestor::h2)][not(ancestor::div[@class="box__right"] or self::style or self::script or  ancestor::style or ancestor::script or ancestor::p[@id="news-body-cta"] or ancestor::div[@id="bwbodyimg"])]').extract()), flags=re.IGNORECASE)
                 yield item
             else:
                 yield item
