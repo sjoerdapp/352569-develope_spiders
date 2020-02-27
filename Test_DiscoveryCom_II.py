@@ -26,24 +26,36 @@ from scrapy import FormRequest
 
 
 class QuotessSpider(scrapy.Spider):
-    name = 'DiscoveryCom_II_4701100ARV002'
-    custom_settings = {
-         'JOBDIR' : 'None',
-         'FILES_STORE' : 's3://352569/DiscoveryCom_II_4701100ARV002/',
-        }
+    name = 'Test_DiscoveryCom_II_4701100ARV002'
     #custom_settings = {
-    #    'SPLASH_URL': 'http://localhost:8050',
-    #    'DOWNLOADER_MIDDLEWARES': {
-    #        'scrapy_splash.SplashCookiesMiddleware': 723,
-    #        'scrapy_splash.SplashMiddleware': 725,
-    #        'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,
-    #    },
-    #    'SPIDER_MIDDLEWARES': {
-    #        'scrapy_splash.SplashDeduplicateArgsMiddleware': 100,
-    #    },
-    #    'DUPEFILTER_CLASS': 'scrapy_splash.SplashAwareDupeFilter',
-    #}
+    #     'JOBDIR' : 'None',
+    #     'FILES_STORE' : 's3://352569/DiscoveryCom_II_4701100ARV002/',
+    #    }
+
     start_urls = ['https://corporate.discovery.com/discovery-newsroom/?P=340']
+
+    #def start_requests(self):
+    #    headers = {
+    #                'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+    #                'accept-encoding': 'gzip, deflate, br',
+    #                'accept-language': 'de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7',
+    #                'cookie': '_ga=GA1.2.1502014306.1579858238; _gid=GA1.2.1368996451.1582642606',
+    #                #'_ga=GA1.2.665324667.1558623191; _gid=GA1.2.915133571.1558623191; s_cc=true; s_sq=%5B%5BB%5D%5D',
+    #                'sec-fetch-dest': 'document',
+    #                'sec-fetch-mode': 'navigate',
+    #                'sec-fetch-user': '?1',
+    #                'upgrade-insecure-requests': '1',
+    #                'user-agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36',
+    #       }
+    ##    #data = {'action': 'wds_corporate_newsroom_load_more',
+    ##    #        'wp_nonce': 'f314e95df8',
+    ##    #        'page': '100',
+    ##    #        'post_type': 'discovery-newsroom'
+    ##    #        }
+##
+##   # #   
+ #   #    s_url = 'https://corporate.discovery.com/discovery-newsroom/?P=340'
+    #    yield scrapy.Request(url=s_url, method='GET', headers=headers, callback=self.parse )
 
     def parse(self, response):
           #body = json.loads(response.text)
@@ -114,5 +126,11 @@ class QuotessSpider(scrapy.Spider):
                 yield item
             else:
                 yield item
-       
-       
+          #auxs = response.xpath('//article')
+          #body = response.body
+          #item = {
+          #            'Body': body,
+          #    #        'HEADLINE': aux.xpath('.//h3[@class="news-card-title"]/a//text()').extract_first(),
+          #    #        'DOCLINK': aux.xpath('.//h3[@class="news-card-title"]/a/@href').extract_first(),
+          #            }
+          	  #yield item
