@@ -41,30 +41,30 @@ class QuotessSpider(scrapy.Spider):
     #    },
     #    'DUPEFILTER_CLASS': 'scrapy_splash.SplashAwareDupeFilter',
     #}
-    start_urls = ['http://masco.com']
+    start_urls = ['http://investor.masco.com/investor-relations/news/default.aspx']
 
-    def parse(self, response):  # follow drop down menue for different years
-         years = list(range(0, 4, 5)) # fill in years which should be scraped, always last yeat +1 as upper bound will not be element of the list
-         #del years[0]  # delets first element "NULL" from list of years
-         for year in years:
-             aux_url = 'http://masco.com/news/news-stream/P{}/'
-             year_url = [aux_url.format(year)][0]
-             yield scrapy.Request(url=year_url, callback=self.parse_next)
+    #def parse(self, response):  # follow drop down menue for different years
+    #     years = list(range(0, 4, 5)) # fill in years which should be scraped, always last yeat +1 as upper bound will not be element of the list
+    #     #del years[0]  # delets first element "NULL" from list of years
+    #     for year in years:
+    #         aux_url = 'http://investor.masco.com/investor-relations/news/default.aspx'
+    #         year_url = [aux_url.format(year)][0]
+    #         yield scrapy.Request(url=year_url, callback=self.parse_next)
 
-    def parse_next(self, response):
-          auxs = response.xpath('//section[@class="contentMainBlock latestNews column"]/article')
+    def parse(self, response):
+          auxs = response.xpath('//div[contains(@class, "ModuleItemRow ModuleItem")]')
           for aux in auxs:
               item = SwisscomIvCrawlerItem()
-              item['PUBSTRING'] = aux.xpath('.//p[@class="newsEntryMeta"]/text()').extract_first().rsplit('\t',1)[1] # cuts out the part '\t' berfore the date as well as the 
-              item['HEADLINE']= aux.xpath('.//h2/a/text()').extract_first()
-              item['DOCLINK']= aux.xpath('.//h2/a/@href').extract_first()
+              item['PUBSTRING'] = aux.xpath('./span[@class="ModuleDate"]/text()').extract_first() #.rsplit('\t',1)[1] # cuts out the part '\t' berfore the date as well as the 
+              item['HEADLINE']= aux.xpath('.//span[@class="ModuleHeadline"]/text()').extract_first()
+              item['DOCLINK']= aux.xpath('.//a[@class="ModuleHeadlineLink"]/@href').extract_first()
               #item = {
               #        'PUBSTRING': aux.xpath('./p[@class="news-card-date"]//text()').extract()[1],
               #        'HEADLINE': aux.xpath('.//h3[@class="news-card-title"]/a//text()').extract_first(),
               #        'DOCLINK': aux.xpath('.//h3[@class="news-card-title"]/a/@href').extract_first(),
               #        }
               base_url = 'http://masco.com'
-              aux_url = aux.xpath('.//h2/a/@href').extract_first()
+              aux_url = item['DOCLINK']
               
               if '.pdf' in aux_url.lower() or 'static-files' in aux_url.lower():
                 if aux_url.startswith('http'):
@@ -105,7 +105,7 @@ class QuotessSpider(scrapy.Spider):
             item['DESCRIPTION'] = ''
             yield item
         else:
-            item['DESCRIPTION'] = re.sub(name_regex,'' ," ".join(response.xpath('//div[@class="contentMainBlock singleArticle"]//text()[not(ancestor::h1 or ancestor::*[@class="featuredImgWrap"] or ancestor::*[@class="singleArticleMeta"])][not(ancestor::div[@class="box__right"] or self::style or self::script or  ancestor::style or ancestor::script or ancestor::p[@id="news-body-cta"] or ancestor::div[@id="bwbodyimg"])]').extract()), flags=re.IGNORECASE)
+            item['DESCRIPTION'] = re.sub(name_regex,'' ," ".join(response.xpath('//div[@class="ModuleBody"]//text()[not(ancestor::h1 or ancestor::*[@class="featuredImgWrap"] or ancestor::*[@class="singleArticleMeta"])][not(ancestor::div[@class="box__right"] or self::style or self::script or  ancestor::style or ancestor::script or ancestor::p[@id="news-body-cta"] or ancestor::div[@id="bwbodyimg"])]').extract()), flags=re.IGNORECASE)
             item['DOCLINK'] = response.url
             if not re.search('[a-zA-Z]', item['DESCRIPTION']):
                 item['DESCRIPTION'] = 'FEHLER'

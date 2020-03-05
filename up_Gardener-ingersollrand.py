@@ -11,23 +11,25 @@ from swisscom_IV_crawler.items import SwisscomIvCrawlerItem
 ### UPDATES
 ### get latest 20 news
 
-### tranetechnologies 1|1
-### classic post.payload with json
+### Gardener - Ingersoll Rand Plc 1|1
+### classic get
+### there is an additional page which announces some product news "https://www.irco.com/news" decided not to scrape it yet. 
+### url would be : 'https://www.irco.com/api/tagsearch/SearchByTags?cid=%7BCC696D31-645D-4C97-99EE-8A163654B3EB%7D&lang=en&regionalize=DF3C598D-155A-4837-9881-D07CD91847C2&searchText=&takeAll=true' get with json
 ### all data comes in one request
 ### some doclincs are pdfs
 ### back to 20010703
 
 
 class BHGE(scrapy.Spider):
-    name = "INGR_I_2097700ARV001"
+    name = "Gardener-IngersollRand_9900373ARV001"
     
     custom_settings = {
          'JOBDIR' : 'None',
-         'FILES_STORE' : 's3://352569/INGR_I_2097700ARV001/',
+         'FILES_STORE' : 's3://352569/Gardener-IngersollRand_9900373ARV001/',
         }
     
-    
-    start_urls = ['https://investors.tranetechnologies.com/feed/PressRelease.svc/GetPressReleaseList?apiKey=BF185719B0464B3CB809D23926182246&LanguageId=1&bodyType=3&pressReleaseDateFilter=3&categoryId=00000000-0000-0000-0000-000000000000&pageSize=-1&pageNumber=0&tagList=&includeTags=true&year=2020&excludeSelection=1']
+    start_urls = ['https://investors.irco.com/news/default.aspx'] 
+
     #def start_requests(self):
     #    headers = {           
     #        #'Cookie': 's_fid=28FC7A4F102D95B5-31A335B997F16D31; s_cc=true; _fbp=fb.1.1548021474707.806907153; s_gnr=1548021490426-New; s_sq=trane-ir-corp-ingersollrand%252Ctraneirglobalprod%3D%2526c.%2526a.%2526activitymap.%2526page%253Dirc%25253Aglobal%25253Anews%2526link%253DView%252520All%252520News%252520Releases%2526region%253Dpage%2526pageIDType%253D1%2526.activitymap%2526.a%2526.c%2526pid%253Dirc%25253Aglobal%25253Anews%2526pidt%253D1%2526oid%253Dhttp%25253A%25252F%25252Fir.ingersollrand.com%25252Finvestors%25252Fpress-releases-and-events%25252Fpress-releases%25252Fdefault.aspx%2526ot%253DA; _ga=GA1.2.579428182.1548021493; _gid=GA1.2.1790252220.1548021493; bpazaws52gukakzc__ctrl0_ctl60_uccaptcha=B8OiVP/tudfMCGa1WPXdj0RTkhMOx4tFGGVHJHKivWw4pWEDk82uBXz59FZIfiI75KcnNPdMz+BuAREmlLXfytHcS+tYBi5KUt2FaoIyGm/Fqh38/BC+4RTZTWx6YviPTCaNNzLNb5dAKB3Xkgrllg==; tp=3599; s_ppv=irc%253Ana%253Aus%253Aen%253Awelcome%2520to%2520ingersoll%2520rand%253Anews%2C39%2C39%2C1410',
@@ -51,32 +53,25 @@ class BHGE(scrapy.Spider):
 #    #    #for year in list(range(2001, 2020)):  # loop iterating over different pages of ajax request
 #    #        #data['year'] = year
 #    #    s_url = 'http://ir.ingersollrand.com/Services/PressReleaseService.svc/GetPressReleaseList'
-    #    yield scrapy.Request(s_url, method='POST', body=json.dumps(data), headers=headers, callback=self.parse)
-        #for num in range(0,11):  # loop iterating over different pages of ajax request
+#    #    yield scrapy.Request(s_url, method='POST', body=json.dumps(data), headers=headers, callback=self.parse)
+    #    #for num in range(0,11):  # loop iterating over different pages of ajax request
         #    data['page'] = str(num)
         #    s_url = 'https://investor.twitterinc.com/Services/PressReleaseService.svc/GetPressReleaseList'
         #    yield FormRequest(url=s_url, formdata=data, headers=headers, callback=self.parse )
     
     def parse(self, response):
-        body = json.loads(response.text)  # load jason response from post request
-        auxs = body['GetPressReleaseListResult']
+        auxs = response.xpath('//div[@class="module_item"]')
         if len(auxs) > 20:
             auxs = auxs[0:20]
 
-        #body = dat[-1]['data']  # [-1] selects last element # extract data body with html content from the json response file
-        #quotes = Selector(text=body).xpath('//div[@class="views-row"]')  # define html body content as reference for the selector
-        for dat in auxs:
+        for aux in auxs:
             item = SwisscomIvCrawlerItem()
-            item['PUBSTRING'] = dat['PressReleaseDate']
-            item['HEADLINE']= dat['Headline']
-            item['DOCLINK']= dat['LinkToDetailPage']
+            item['PUBSTRING'] = aux.xpath('.//span[@class="module_date-text"]/text()').extract_first()
+            item['HEADLINE']= aux.xpath('.//div[@class="module_headline"]/a/text()').extract_first()
+            item['DOCLINK']= aux.xpath('.//div[@class="module_headline"]/a/@href').extract_first()
             #item = {
-            #          'PUBSTRING': dat['PressReleaseDate'],
-            #          'HEADLINE': dat['Headline'],
-            #          'DOCLINK': dat['LinkToDetailPage'],
-            #          }
-            base_url = 'https://investors.tranetechnologies.com'
-            aux_url =  dat['LinkToDetailPage']
+            base_url = 'https://investors.irco.com/'
+            aux_url =  item['DOCLINK']
             
             if '.pdf' in aux_url.lower():
                 if aux_url.startswith('http'):
@@ -110,13 +105,10 @@ class BHGE(scrapy.Spider):
     def parse_details(self, response):
         item = response.meta['item']
         name_regex = r'(IR\s*is\s*a\s*leading\s*innovation\s*and\s*solutions\s*provider)(.|\s)*|(Forward(.|\s*)Looking\s*Statements)(.|\s)*|(\bAbout\s*Ingersoll\s*Rand\b)(.|\s)*|(\bAbout.Ingersoll.Rand\b)(.|\s)*'
-        name_regex_2=r'(\bAbout\s*Trane\s*Technologies)(.|\s)*|(\bAbout.Trane.Technologies)(.|\s)*|(\bABOUT\s*Trane\s*Technologies\b)(.|\s)*|(\bABOUT\s*TRANE\s*TECHNOLOGIES\b)(.|\s)*'
         item['DESCRIPTION'] = re.sub(name_regex,'' ," ".join(response.xpath('//div[@class="module_body"]//text()[not(ancestor::div[@class="box__right"] or self::style or self::script or  ancestor::style or ancestor::script or ancestor::p[@id="news-body-cta"] or ancestor::div[@id="bwbodyimg"])]').extract()), flags=re.IGNORECASE)
-        item['DESCRIPTION'] = re.sub(name_regex_2,'' , item['DESCRIPTION'])
         item['DOCLINK'] = response.url
         if not item['DESCRIPTION']:
             item['DESCRIPTION'] = re.sub(name_regex,'' ," ".join(response.xpath('//div[@class="ModuleBody"]//text()[not(ancestor::div[@class="box__right"] or self::style or self::script or  ancestor::style or ancestor::script or ancestor::p[@id="news-body-cta"] or ancestor::div[@id="bwbodyimg"])]').extract()), flags=re.IGNORECASE)
-            item['DESCRIPTION'] = re.sub(name_regex_2,'' , item['DESCRIPTION'])
             if not re.search('[a-zA-Z]', item['DESCRIPTION']):
                 item['DESCRIPTION'] = 'FEHLER'
                 yield item

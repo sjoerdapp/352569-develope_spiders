@@ -17,6 +17,7 @@ from swisscom_IV_crawler.items import SwisscomIvCrawlerItem
 ### 100 news per page, get first 20
 
 ### Achtung spider wurde angepasst, News inkl. Description kommen in json mit initial response
+### Reihenfolge ist willkürlich, daher ist es nötig das aktuelle Jahr mit if condition zu filtern
 ### Momentan keine weiterleitung auf eine Detailpage nötig. 
 
 ### DTE Energy Company 1|1
@@ -54,24 +55,24 @@ class QuotessSpider(scrapy.Spider):
     #         yield scrapy.Request(url=year_url, callback=self.parse_next)
 
     def parse(self, response):
-          auxs = json.loads(response.text)['response']
+        auxs = json.loads(response.text)['response']
           
-          for dat in auxs[0:10]:
-              item = SwisscomIvCrawlerItem()
-              date_regex_I = r'(Mon|Tue|Wed|Thu|Fri)'
-              date_regex_II = r'(\d{2}:\d{2})(.|\s)*'
-              item['PUBSTRING'] =re.sub(date_regex_II, '', re.sub(date_regex_I, '', dat['date']))# cuts out the part berfore the date as well as the /n at the end of the string
-              item['HEADLINE']= dat['title']
-              item['DOCLINK']= response.url
+        for dat in auxs:
 
-              raw_text = " ".join(Selector(text=dat['main_Body']).xpath('//p//text()').extract())
-
-              name_regex = r'(Forward(.|\s*)Looking\s*Statements)(.|\s)*|(DTE\s*Energy\s*(\(\s*NYSE\s*:\s*DTE\s*\)\s*)?is\s*a\s*Detroit\s*.based\s*diversified\s*energy\s*company)(.|\s)*'
-              name_regex_2=r'(\bAbout\s*DTE\s*Energy)(.|\s)*|(\bAbout.DTE.Energy\b)(.|\s)*|(\bABOUT.DTE.Energy\b)(.|\s)*|(\bABOUT\s*DTE\s*Energy\b)(.|\s)*'
-              item['DESCRIPTION'] = re.sub(name_regex,'' ,raw_text)
-              item['DESCRIPTION'] = re.sub(name_regex_2,'' , item['DESCRIPTION'])
-
-              yield item
+            item = SwisscomIvCrawlerItem()
+            date_regex_I = r'(Mon|Tue|Wed|Thu|Fri)'
+            date_regex_II = r'(\d{2}:\d{2})(.|\s)*'
+            item['PUBSTRING'] =re.sub(date_regex_II, '', re.sub(date_regex_I, '', dat['date']))# cuts out the part berfore the date as well as the /n at the end of the string
+            if '2020' in item['PUBSTRING']:
+                item['HEADLINE']= dat['title']
+                item['DOCLINK']= response.url
+                raw_text = " ".join(Selector(text=dat['main_Body']).xpath('//p//text()').extract())
+                name_regex = r'(Forward(.|\s*)Looking\s*Statements)(.|\s)*|(DTE\s*Energy\s*(\(\s*NYSE\s*:\s*DTE\s*\)\s*)?is\s*a\s*Detroit\s*.based\s*diversified\s*energy\s*company)(.|\s)*'
+                name_regex_2 = r'(\bAbout\s*DTE\s*Energy)(.|\s)*|(\bAbout.DTE.Energy\b)(.|\s)*|(\bABOUT.DTE.Energy\b)(.|\s)*|(\bABOUT\s*DTE\s*Energy\b)(.|\s)*'
+                item['DESCRIPTION'] = re.sub(name_regex,'' ,raw_text)
+                item['DESCRIPTION'] = re.sub(name_regex_2,'' , item['DESCRIPTION'])
+                yield item
+            
 
 
 

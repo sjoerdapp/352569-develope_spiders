@@ -127,8 +127,8 @@ class QuotessSpider(scrapy.Spider):
         
     def parse_details(self, response):
         item = response.meta['item']
-        name_regex = r'(Cautionary(.|\s*)Statement\s*:)(.|\s)*|(Forward(.|\s*)Looking\s*Statements)(.|\s)*|(\bAbout\s*Newmont\b)(.|\s)* |(\bAbout.Newmont.Goldcorp\b)(.|\s)*'#(This\s*(earnings\s*|press\s*)?release\s*may\s*contain\s*Forward(.|\s*)Looking\s*Statements)(.|\s)*|(\bABOUT\s*MSCI\b)(.|\s)*|(\bABOUT.MSCI\b)(.|\s)*' #|(\bABOUT\s*L\s*BRANDS\b)(.|\s)*'
-        #item['Headline'] = response.css('span.ModuleTitleText::text').extract()
+        name_regex=r'(Forward(.|\s*)Looking\s*Statements(?!. including))(.|\s)*|(Cautionary(.|\s*)Statement\s*:)(.|\s)*|(\bAbout\s*Newmont\b)(.|\s)* |(\bAbout.Newmont.Goldcorp\b)(.|\s)*'
+        #| (Cautionary Statement Regarding Forward)(.|\s)*item['Headline'] = response.css('span.ModuleTitleText::text').extract()
         if '.pdf' in response.url.lower() or 'external.file' in response.url.lower():
             item['file_urls'] = [response.url]
             item['DOCLINK'] = response.url

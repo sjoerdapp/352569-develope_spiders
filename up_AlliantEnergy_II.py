@@ -56,7 +56,9 @@ class QuotessSpider(scrapy.Spider):
           for aux in auxs[0:20]:
               item = SwisscomIvCrawlerItem()
               item['PUBSTRING'] = " ".join(aux.xpath('.//strong/text()').extract()) # cuts out the part berfore the date as well as the /n at the end of the string
-              item['HEADLINE']= aux.xpath('.//a/text()').extract_first()
+              item['HEADLINE'] = aux.xpath('.//a/text()').extract_first()
+              if not item['HEADLINE']:
+                item['HEADLINE'] = aux.xpath('.//a/strong/text()').extract_first() 
               item['DOCLINK']= aux.xpath('.//a/@href').extract_first()
               if not re.search('([0-9]+.*){4}', item['PUBSTRING']): 
                 item['PUBSTRING'] = response.xpath('//div[@class="content-block content-bg-gray"]//div/strong/text()').extract_first()

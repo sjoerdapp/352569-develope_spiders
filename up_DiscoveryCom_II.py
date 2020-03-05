@@ -55,7 +55,7 @@ class QuotessSpider(scrapy.Spider):
           #item = SwisscomIvCrawlerItem()
           #item['DOCLINK']= response.xpath('//div[@class="articles"]/article[contains(@id, "post-51390")]//text()').extract()#body[0 : 10000]#str(response.body)#
           #yield item
-          for aux in auxs[0:20]:
+          for aux in auxs[0:30]:
               item = SwisscomIvCrawlerItem()
               item['PUBSTRING'] = aux.xpath('.//time[contains(@class, "published")]/text()').extract_first()
               item['HEADLINE']= aux.xpath('.//h2/a/text()').extract_first()

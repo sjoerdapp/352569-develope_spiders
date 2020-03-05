@@ -39,10 +39,10 @@ class QuotesInfiniteScrollSpider(scrapy.Spider):
             item = SwisscomIvCrawlerItem()
             item['file_urls'] = [base_url + aux['Url']]
             item['PUBSTRING'] = aux['CreationDate']
-            item['HEADLINE']= aux['Title']
+            item['HEADLINE']= re.split(r'.\d{6,}', aux['Title'])[0]
             item['DOCLINK']= base_url + aux['Url']
             item['DESCRIPTION'] = ''
-            yield item 
+            yield item
             #item = {
             #        'PUBSTRING': aux.xpath('./following-sibling::div[@data-label="Date"]/text()').extract_first(),
             #        'HEADLINE': aux.xpath('./a/text()').extract_first(),

@@ -8,9 +8,9 @@ import re
 import json
 
 APIKEY ='9c97ff0f27ed491fbc1c33a3dbf856e3'
-start = 420 ## 20.12. mit 330 beginnen # number after which spider should be started, starts with 0 (includes first argument)
+start = 420 # number after which spider should be started, starts with 0 (includes first argument)
 stop = 29 ## range of how many spiders should be updated # spiders = figure+1 as python counts zero
-with open ('//?/C:/Users/chris/strique/scraping/US/UpdateSource/UPDATE_SOURCES_V2_2020-01-30.csv') as file:
+with open ('//?/C:/Users/chris/strique/scraping/US/UpdateSource/UPDATE_SOURCES_V2_2020-03-04.csv') as file:
 	SourcesList = csv.DictReader(file, delimiter=';')
 	get_spider_list = json.loads(requests.get('https://app.scrapinghub.com/api/spiders/list.json?project=352569', auth=("9c97ff0f27ed491fbc1c33a3dbf856e3", '')).text)
 	SpiderList =get_spider_list['spiders']

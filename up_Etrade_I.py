@@ -61,7 +61,7 @@ class QuotessSpider(scrapy.Spider):
                 'videoonly': 'false',
                 'src': 'bwi',
                 'excludeTopics': 'NONCOMPANY',
-                'token': '2ca40a453d863a5d9bf5282fa238da061d7732caefdbe7af3b3bbac5c81aacad',  # noqa
+                'token': '41cf226534bb0624a5713e386a48c1c13f15f228d828863818b6aeda8d579f03',
             }
 
         for num in range(1,2):  # loop iterating over different pages of ajax request

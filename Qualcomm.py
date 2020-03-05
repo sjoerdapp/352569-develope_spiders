@@ -110,7 +110,7 @@ class QuotessSpider(scrapy.Spider):
             item['DESCRIPTION'] = ''
             yield item
         else:
-            item['DESCRIPTION'] = re.sub(name_regex,'' ," ".join(response.xpath('//div[contains(@class, "Subtitle")]/p/text() | //div[@class="box__BoxBase-sc-11pq9br-0 fABWPi"]//text()[not(ancestor::div[@class="box__right"] or self::style or self::script or ancestor::style or ancestor::script or ancestor::p[@id="news-body-cta"] or ancestor::div[@id="bwbodyimg"])]').extract()), flags=re.IGNORECASE)
+            item['DESCRIPTION'] = re.sub(name_regex,'' ," ".join(response.xpath('//div[contains(@class, "Subtitle")]/p/text() | //div[contains(@class, "box__BoxBase-sc-11pq9br-0")]//text()[not(ancestor::div[@class="box__right"] or self::style or self::script or ancestor::style or ancestor::script or ancestor::p[@id="news-body-cta"] or ancestor::div[@id="bwbodyimg"])]').extract()), flags=re.IGNORECASE)
             item['DOCLINK'] = response.url
             pdf_link = response.xpath('//a[contains(text(), "Complete press release")]/@href').extract_first()
             if pdf_link:

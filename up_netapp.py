@@ -52,6 +52,9 @@ class QuotesInfiniteScrollSpider(scrapy.Spider):
             item['HEADLINE']= auxx.xpath('.//h3/text()').extract_first()
             item['DOCLINK']= auxx.xpath('./@href').extract_first()
             
+            if not item['DOCLINK']:
+                continue
+
             base_url = 'https://www.netapp.com'
             auxx_url = item['DOCLINK']
             
